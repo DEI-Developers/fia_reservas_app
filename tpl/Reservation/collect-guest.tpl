@@ -11,11 +11,22 @@
 			<h2 class="text-center">{translate key=WeNeedYourEmailAddress}</h2>
 
 			<form method="post" id="form-guest-collect" action="{$smarty.server.REQUEST_URI|escape:'html'}" role="form">
-
 				<div class="mb-3">
 					<div class="form-group">
 						<label class="reg fw-bold" for="email">{translate key="Email"}</label>
 						{textbox type="email" name="EMAIL" class="input" value="Email" required="required"}
+					</div>
+                    <div class="form-group">
+						<label class="reg fw-bold" for="firstname">{translate key="FirstName"}</label>
+						{textbox type="firstname" name="FIRSTNAME" class="input" value="FirstName" required="required"}
+					</div>
+                    <div class="form-group">
+						<label class="reg fw-bold" for="lastname">{translate key="LastName"}</label>
+						{textbox type="lastname" name="LASTNAME" class="input" value="LastName" required="required"}
+					</div>
+                    <div class="form-group">
+						<label class="reg fw-bold" for="username">{translate key="Username"}</label>
+						{textbox type="username" name="USERNAME" class="input" value="Username" required="required"}
 					</div>
 				</div>
 
@@ -25,6 +36,7 @@
 					</button>
 				</div>
 			</form>
+
 		</div>
 	</div>
 	{setfocus key='EMAIL'}

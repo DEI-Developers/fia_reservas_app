@@ -43,10 +43,13 @@ class GuestReservationPresenter extends ReservationPresenter
             $this->LoadValidators();
             if ($this->page->IsCreatingAccount() && $this->page->IsValid()) {
                 $email = $this->page->GetEmail();
-                Log::Debug('Creating a guest reservation as %s', $email);
+                $firstname = $this->page->GetFirstName();
+                $lastname = $this->page->GetLastName();
+                $username = $this->page->GetUsername();
+                Log::Debug('Creating a guest reservation as %s (%s %s) with email %s', $username, $firstname, $lastname, $email);
 
                 $currentLanguage = Resources::GetInstance()->CurrentLanguage;
-                $this->registration->Register($email, $email, 'Guest', 'Guest', Password::GenerateRandom(), null, $currentLanguage, null);
+                $this->registration->Register($username, $email, $firstname, $lastname, Password::GenerateRandom(), null, $currentLanguage, null);
                 $this->authentication->Login($email, new WebLoginContext(new LoginData(false, $currentLanguage)));
                 parent::PageLoad();
             }

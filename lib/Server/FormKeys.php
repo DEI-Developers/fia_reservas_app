@@ -76,6 +76,8 @@ class FormKeys
     public const DISPLAY_PAGE = 'DISPLAY_PAGE';
 
     public const EMAIL = 'email';
+    public const FIRSTNAME = 'firstname';
+    public const LASTNAME = 'lastname';
     public const END_DATE = 'endDate';
     public const END_PERIOD = 'endPeriod';
     public const END_REMINDER_ENABLED = 'END_REMINDER_ENABLED';

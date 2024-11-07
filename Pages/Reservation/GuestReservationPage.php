@@ -16,6 +16,21 @@ interface IGuestReservationPage extends INewReservationPage
     public function GetEmail();
 
     /**
+     * @return string
+     */
+    public function GetFirstName();
+
+    /**
+     * @return string
+     */
+    public function GetLastName();
+
+    /**
+     * @return string
+     */
+    public function GetUsername();
+
+    /**
      * @return bool
      */
     public function IsCreatingAccount();
@@ -68,6 +83,21 @@ class GuestReservationPage extends NewReservationPage implements IGuestReservati
     public function GetEmail()
     {
         return $this->GetForm(FormKeys::EMAIL);
+    }
+
+    public function GetFirstName()
+    {
+        return $this->GetForm(FormKeys::FIRSTNAME);
+    }
+
+    public function GetLastName()
+    {
+        return $this->GetForm(FormKeys::LASTNAME);
+    }
+
+    public function GetUsername()
+    {
+        return $this->GetForm(FormKeys::USERNAME);
     }
 
     public function IsCreatingAccount()
