@@ -55,7 +55,7 @@ class GuestReservationPresenter extends ReservationPresenter
             }
         }
     }
-
+    
     protected function LoadValidators()
     {
         $this->page->RegisterValidator('emailformat', new EmailValidator($this->page->GetEmail()));

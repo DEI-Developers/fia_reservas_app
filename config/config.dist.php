@@ -212,12 +212,19 @@ $conf['settings']['registration']['require.organization'] = 'false';
  * Error logging
  */
 $conf['settings']['logging']['folder'] = '/var/log/librebooking/log'; //Absolute path to folder were the log will be written, writing permissions to the folder are required
-$conf['settings']['logging']['level'] = 'none'; //Set to none disable logs, error to only log errors or debug to log all messages to the app.log file 
+$conf['settings']['logging']['level'] = 'none'; //Set to none disable logs, error to only log errors or debug to log all messages to the app.log file
 $conf['settings']['logging']['sql'] = 'false'; //Set to true no enable the creation of and sql.log file
 
 // IN THE REDIRECT URI'S (OF THE AUTHENTICATION YOU ARE USING) YOU NEED TO ADD THE PATH FROM THE WEBSITE DOMAIN TO THE
 // WEB/GOOGLE-AUTH.PHP or WEB/FACEBOOK-AUTH.PHP or WEB/MICROSOFT-AUTH.PHP (depending on the services you are using)
 // EG: http://localhost/Web/facebook-auth.php
+
+/**
+ * Login Guest Form configuration
+ */
+
+$conf['settings']['authentication']['allow.guest.reservations'] = 'true'; // if the login guest form is enabled
+
 /**
  * Google login configuration
  */

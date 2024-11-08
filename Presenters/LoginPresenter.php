@@ -227,7 +227,7 @@ class LoginPresenter
 
     /**
      * Checks in the config files if google authentication is active creating a new client if true and setting it's config keys.
-     * Returns the created google url for the authentication  
+     * Returns the created google url for the authentication
      */
     public function GetGoogleUrl(){
         if(Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_ALLOW_GOOGLE, new BooleanConverter())){
@@ -239,14 +239,13 @@ class LoginPresenter
             $client->addScope("profile");
             $client->setPrompt("select_account");
             $GoogleUrl = $client->createAuthUrl();
-            
             return $GoogleUrl;
         }
     }
 
     /**
      * Checks in the config files if microsoft authentication is active creating the url if true with the respective keys
-     * Returns the created microsoft url for the authentication  
+     * Returns the created microsoft url for the authentication
      */
     public function GetMicrosoftUrl(){
         if(Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_ALLOW_MICROSOFT, new BooleanConverter())){
@@ -265,7 +264,7 @@ class LoginPresenter
 
     /**
      * Checks in the config files if facebook authentication is active creating the url if true with the respective keys
-     * Returns the created facebook url for the authentication  
+     * Returns the created facebook url for the authentication
      */
     public function GetFacebookUrl(){
         if(Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_ALLOW_FACEBOOK, new BooleanConverter())){
@@ -278,8 +277,8 @@ class LoginPresenter
             $helper = $facebook_Client->getRedirectLoginHelper();
 
             $permissions = ['email', 'public_profile']; // Add other permissions as needed
-            
-            //The FacebookRedirectLoginHelper makes use of sessions to store a CSRF value. 
+
+            //The FacebookRedirectLoginHelper makes use of sessions to store a CSRF value.
             //You need to make sure you have sessions enabled before invoking the getLoginUrl() method.
             if (!session_id()) {
                 session_start();

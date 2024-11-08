@@ -141,6 +141,7 @@ class ConfigKeys
 
     public const GOOGLE_ANALYTICS_TRACKING_ID = 'tracking.id';
 
+    public const AUTHENTICATION_ALLOW_GUEST_FORM = 'allow.guest.reservations';
     public const AUTHENTICATION_ALLOW_FACEBOOK = 'allow.facebook.login';
     public const AUTHENTICATION_ALLOW_GOOGLE = 'allow.google.login';
     public const AUTHENTICATION_ALLOW_MICROSOFT = 'allow.microsoft.login';
@@ -162,6 +163,8 @@ class ConfigKeys
     public const LOGGING_FOLDER = 'folder';
     public const LOGGING_LEVEL = 'level';
     public const LOGGING_SQL = 'sql';
+
+    public const ALLOW_GUEST_RESERVATIONS = 'allow.guest.reservations';
 
     public const GOOGLE_CLIENT_ID = 'google.client.id';
     public const GOOGLE_CLIENT_SECRET = 'google.client.secret';

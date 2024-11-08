@@ -94,17 +94,17 @@ interface ILoginPage extends IPage, ILoginBasePage
     public function SetAnnouncements($announcements);
 
     /**
-     *  
+     *
      */
     public function SetGoogleUrl($URL);
 
     /**
-     *  
+     *
      */
     public function SetMicrosoftUrl($URL);
 
     /**
-     *  
+     *
      */
     public function SetFacebookUrl($URL);
 }
@@ -119,7 +119,7 @@ class LoginPage extends Page implements ILoginPage
 
         $this->presenter = new LoginPresenter($this); // $this pseudo variable of class object is Page object
         $resumeUrl = $this->server->GetQuerystring(QueryStringKeys::REDIRECT);
-        if($resumeUrl !== NULL) $resumeUrl = str_replace('&amp;&amp;', '&amp;', $resumeUrl);
+        if ($resumeUrl !== NULL) $resumeUrl = str_replace('&amp;&amp;', '&amp;', $resumeUrl);
         $this->Set('ResumeUrl', $resumeUrl);
         $this->Set('ShowLoginError', false);
         $this->Set('Languages', Resources::GetInstance()->AvailableLanguages);
@@ -128,11 +128,12 @@ class LoginPage extends Page implements ILoginPage
         $this->Set('AllowFacebookLogin', Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_ALLOW_FACEBOOK, new BooleanConverter()));
         $this->Set('AllowGoogleLogin', Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_ALLOW_GOOGLE, new BooleanConverter()));
         $this->Set('AllowMicrosoftLogin', Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_ALLOW_MICROSOFT, new BooleanConverter()));
+        $this->Set('AllowEmailLogin', Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_ALLOW_GUEST_FORM, new BooleanConverter()));
         $scriptUrl = Configuration::Instance()->GetScriptUrl();
         $parts = explode('://', $scriptUrl);
         $this->Set('Protocol', $parts[0]);
         if (isset($parts[1])) {
-          $this->Set('ScriptUrlNoProtocol', $parts[1]);
+            $this->Set('ScriptUrlNoProtocol', $parts[1]);
         }
         $this->Set('GoogleState', strtr(base64_encode("resume=$scriptUrl/external-auth.php%3Ftype%3Dgoogle%26redirect%3D$resumeUrl"), '+/=', '-_,'));
         $this->Set('EnableCaptcha', Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_CAPTCHA_ON_LOGIN, new BooleanConverter()));
@@ -299,40 +300,44 @@ class LoginPage extends Page implements ILoginPage
     }
 
     /**
-     * Sends the created google url in the presenter to the smarty page 
+     * Sends the created google url in the presenter to the smarty page
      */
-    public function SetGoogleUrl($googleUrl){
-        if(Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_ALLOW_GOOGLE, new BooleanConverter())){
-            $this->Set('GoogleUrl',$googleUrl);
+    public function SetGoogleUrl($googleUrl)
+    {
+        if (Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_ALLOW_GOOGLE, new BooleanConverter())) {
+            $this->Set('GoogleUrl', $googleUrl);
         }
     }
 
     /**
-     * Sends the created microsoft url in the presenter to the smarty page 
+     * Sends the created microsoft url in the presenter to the smarty page
      */
-    public function SetMicrosoftUrl($microsoftUrl){
-        if(Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_ALLOW_MICROSOFT, new BooleanConverter())){
-            $this->Set('MicrosoftUrl',$microsoftUrl);
+    public function SetMicrosoftUrl($microsoftUrl)
+    {
+        if (Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_ALLOW_MICROSOFT, new BooleanConverter())) {
+            $this->Set('MicrosoftUrl', $microsoftUrl);
         }
     }
 
     /**
-     * Sends the created facebook url in the presenter to the smarty page 
+     * Sends the created facebook url in the presenter to the smarty page
      */
-    public function SetFacebookUrl($FacebookUrl){
-        if(Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_ALLOW_FACEBOOK, new BooleanConverter())){
-            $this->Set('FacebookUrl',$FacebookUrl);
+    public function SetFacebookUrl($FacebookUrl)
+    {
+        if (Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::AUTHENTICATION_ALLOW_FACEBOOK, new BooleanConverter())) {
+            $this->Set('FacebookUrl', $FacebookUrl);
         }
     }
 
     /**
-     * Temporary solution for facebook auth SDK error 
+     * Temporary solution for facebook auth SDK error
      * After facebook failed authentication user is redirected to login page (this one) and is shown a message to try again
      * Error occurs rarely (FacebookSDKException)
      */
-    private function SetFacebookErrorMessage(){
+    private function SetFacebookErrorMessage()
+    {
         if (isset($_SESSION['facebook_error']) && $_SESSION['facebook_error'] == true) {
-            $this->Set('facebookError',$_SESSION['facebook_error']);
+            $this->Set('facebookError', $_SESSION['facebook_error']);
             unset($_SESSION['facebook_error']);
         }
     }

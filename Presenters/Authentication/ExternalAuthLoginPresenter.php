@@ -54,18 +54,18 @@ class ExternalAuthLoginPresenter
             $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
             //set the access token that it received
             $client->setAccessToken($token['access_token']);
-        
-            //Using the Google API to get the user information 
+
+            //Using the Google API to get the user information
             $google_oauth = new Google\Service\Oauth2($client);
             $google_account_info = $google_oauth->userinfo->get();
-            
+
             //Save the informations needed to authenticate the login
             $email     =  $google_account_info->email;
             $firstName = $google_account_info->given_name;
             $lastName  = $google_account_info->family_name;
-        
+
             //Process $userData as needed (e.g., create a user, log in, etc.)
-            $this->processUserData($email,$email,$firstName,$lastName);
+            $this->processUserData($email, $email, $firstName, $lastName);
         }
     }
 
@@ -73,13 +73,13 @@ class ExternalAuthLoginPresenter
      * Exchanges the code given by microsoft in _GET for a token and with said token retrieves client data
      */
     private function ProcessMicrosoftSingleSignOn()
-    {        
+    {
         if (isset($_GET['code'])) {
             $code = filter_input(INPUT_GET, 'code');
 
             $tokenEndpoint = 'https://login.microsoftonline.com/'
-                            .urlencode(Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::MICROSOFT_TENANT_ID))
-                            .'/oauth2/v2.0/token';
+                . urlencode(Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::MICROSOFT_TENANT_ID))
+                . '/oauth2/v2.0/token';
 
             $postData = [
                 'client_id' => Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::MICROSOFT_CLIENT_ID),
@@ -95,13 +95,13 @@ class ExternalAuthLoginPresenter
             $response = $client->post($tokenEndpoint, [
                 'form_params' => $postData,
             ]);
-            
+
             // Decode the JSON response
             $tokenData = json_decode($response->getBody(), true);
 
             // Extract the access token from the response
             $accessToken = $tokenData['access_token'];
-            
+
             //Get user information
             $graphApiEndpoint = 'https://graph.microsoft.com/v1.0/me';
 
@@ -111,80 +111,96 @@ class ExternalAuthLoginPresenter
                     'Authorization' => 'Bearer ' . $accessToken,
                 ],
             ]);
-        
+
             // Decode the JSON response
             $userData = json_decode($response->getBody(), true);
-        
+
             // Handle the user data as needed
             $email     = $userData['mail'];
             $firstName = $userData['givenName'];;
             $lastName  = $userData['surname'];
-            
+
             //Process $userData as needed (e.g., create a user, log in, etc.)
-            $this->processUserData($email,$email,$firstName,$lastName);
+            $this->processUserData($email, $email, $firstName, $lastName);
         }
-        
     }
 
     /**
      * Gets token created in facebook-auth.php and exchanges it for the client data
      * Unlike the other two (microsoft and google) the token must be obtained directly in the redirect uri, therefore can't be sent here for exchange(?)
      */
-    private function ProcessFacebookSingleSignOn(){
-        
+    private function ProcessFacebookSingleSignOn()
+    {
+
         $facebook_Client = new Facebook\Facebook([
             'app_id'                => Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::FACEBOOK_CLIENT_ID),
             'app_secret'            => Configuration::Instance()->GetSectionKey(ConfigSection::AUTHENTICATION, ConfigKeys::FACEBOOK_CLIENT_SECRET),
             'default_graph_version' => 'v2.5'
         ]);
-        
+
         if (isset($_SESSION['facebook_access_token'])) {
             $facebook_Client->setDefaultAccessToken(unserialize($_SESSION['facebook_access_token']));
         }
         unset($_SESSION['facebook_access_token']);
 
-        $profile_request = $facebook_Client ->get('/me?fields=name,first_name,last_name,email');
-        $profile = $profile_request ->getGraphUser();
+        $profile_request = $facebook_Client->get('/me?fields=name,first_name,last_name,email');
+        $profile = $profile_request->getGraphUser();
 
         $email     = $profile->getField('email');
         $firstName = $profile->getField('first_name');
         $lastName  = $profile->getField('last_name');
 
         //Process $userData as needed (e.g., create a user, log in, etc.)
-        $this->processUserData($email,$email,$firstName,$lastName);
-        
+        $this->processUserData($email, $email, $firstName, $lastName);
     }
 
     /**
      * Processes user given data, creates a user in database if it doesn't exist and logs it in
      */
-    private function processUserData($username,$email,$firstName,$lastName){
+    private function processUserData($username, $email, $firstName, $lastName)
+    {
         $requiredDomainValidator = new RequiredEmailDomainValidator($email);
         $requiredDomainValidator->Validate();
         if (!$requiredDomainValidator->IsValid()) {
             $this->page->ShowError(array(Resources::GetInstance()->GetString('InvalidEmailDomain')));
             return;
         }
-        if($this->registration->UserExists($username,$email)){
+        if ($this->registration->UserExists($username, $email)) {
             $this->authentication->Login($email, new WebLoginContext(new LoginData()));
-            LoginRedirector::Redirect($this->page);
-        }
-        else{
-            $this->registration->Synchronize(new AuthenticatedUser(
-                $username,
-                $email,
-                $firstName, 
-                $lastName,
-                Password::GenerateRandom(),
-                Resources::GetInstance()->CurrentLanguage,
-                Configuration::Instance()->GetDefaultTimezone(),
-                null,
-                null,
-                null),
+            session_start();
+            $redirectUri = $_SESSION['redirect_uri'];
+            unset($_SESSION['redirect_uri']);
+            if (!empty($redirectUri)) {
+                LoginRedirector::RedirectUri($this->page, $redirectUri);
+            } else {
+                LoginRedirector::Redirect($this->page);
+            }
+        } else {
+            $this->registration->Synchronize(
+                new AuthenticatedUser(
+                    $username,
+                    $email,
+                    $firstName,
+                    $lastName,
+                    Password::GenerateRandom(),
+                    Resources::GetInstance()->CurrentLanguage,
+                    Configuration::Instance()->GetDefaultTimezone(),
+                    null,
+                    null,
+                    null
+                ),
                 false,
-                false);
+                false
+            );
             $this->authentication->Login($email, new WebLoginContext(new LoginData()));
-            LoginRedirector::Redirect($this->page);
+            session_start();
+            $redirectUri = $_SESSION['redirect_uri'];
+            unset($_SESSION['redirect_uri']);
+            if (!empty($redirectUri)) {
+                LoginRedirector::RedirectUri($this->page, $redirectUri);
+            } else {
+                LoginRedirector::Redirect($this->page);
+            }
         }
     }
 }

@@ -16,4 +16,9 @@ class LoginRedirector
             $page->Redirect(empty($url) ? Pages::UrlFromId(Pages::DEFAULT_HOMEPAGE_ID) : $url);
         }
     }
+
+    public static function RedirectUri(ILoginBasePage $page, $uri)
+    {
+        $page->Redirect(html_entity_decode($uri));
+    }
 }
