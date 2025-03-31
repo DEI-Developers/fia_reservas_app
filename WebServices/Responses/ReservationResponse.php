@@ -108,20 +108,22 @@ class ReservationResponse extends RestResponse
             $this->accessories[] = new ReservationAccessoryResponse($server, $accessory->AccessoryId, $accessory->Name, $accessory->QuantityReserved, $accessory->QuantityAvailable);
         }
 
-        if ($canViewDetails) {
-            $this->title = $reservation->Title;
-            $this->description = $reservation->Description;
-            foreach ($attributes as $attribute) {
-                $this->customAttributes[] = new CustomAttributeResponse(
-                    $server,
-                    $attribute->Id(),
-                    $attribute->Label(),
-                    $reservation->GetAttributeValue($attribute->Id())
-                );
-            }
-            foreach ($reservation->Attachments as $attachment) {
-                $this->attachments[] = new AttachmentResponse($server, $attachment->FileId(), $attachment->FileName(), $reservation->ReferenceNumber);
-            }
+        // if ($canViewDetails) {
+
+        // }
+
+        $this->title = $reservation->Title;
+        $this->description = $reservation->Description;
+        foreach ($attributes as $attribute) {
+            $this->customAttributes[] = new CustomAttributeResponse(
+                $server,
+                $attribute->Id(),
+                $attribute->Label(),
+                $reservation->GetAttributeValue($attribute->Id())
+            );
+        }
+        foreach ($reservation->Attachments as $attachment) {
+            $this->attachments[] = new AttachmentResponse($server, $attachment->FileId(), $attachment->FileName(), $reservation->ReferenceNumber);
         }
 
         if ($canViewUser) {
