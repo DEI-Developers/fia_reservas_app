@@ -158,22 +158,22 @@ class ResourceService implements IResourceService
 
         $resourceDtos = [];
         foreach ($resources as $resource) {
-            // if (is_array($resourceIds) && !in_array($resource->GetId(), $resourceIds)) {
-            //     continue;
-            // }
+            if (is_array($resourceIds) && !in_array($resource->GetId(), $resourceIds)) {
+                continue;
+            }
 
-            // $canAccess = $filter->ShouldInclude($resource);
+            $canAccess = $filter->ShouldInclude($resource);
 
-            // if (!$includeInaccessibleResources && !$canAccess) {
-            //     continue;
-            // }
+            if (!$includeInaccessibleResources && !$canAccess) {
+                continue;
+            }
 
-            // if ($canAccess) {
-            //     $canAccess = $statusFilter->ShouldInclude($resource);
-            //     if (!$includeInaccessibleResources && !$canAccess) {
-            //         continue;
-            //     }
-            // }
+            if ($canAccess) {
+                $canAccess = $statusFilter->ShouldInclude($resource);
+                if (!$includeInaccessibleResources && !$canAccess) {
+                    continue;
+                }
+            }
 
             $resourceDtos[] = new ResourceDto(
                 $resource->GetResourceId(),
