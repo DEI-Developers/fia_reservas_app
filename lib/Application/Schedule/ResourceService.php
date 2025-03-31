@@ -164,9 +164,9 @@ class ResourceService implements IResourceService
 
             $canAccess = $filter->ShouldInclude($resource);
 
-            if (!$includeInaccessibleResources && !$canAccess) {
-                continue;
-            }
+            // if (!$includeInaccessibleResources && !$canAccess) {
+            //     continue;
+            // }
 
             if ($canAccess) {
                 $canAccess = $statusFilter->ShouldInclude($resource);
